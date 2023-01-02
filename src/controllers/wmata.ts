@@ -6,7 +6,14 @@ const configData = await load();
 const API_KEY: string = configData['API_KEY']; 
 console.log(API_KEY);
 
-export const getStationInfo = async (req :Request, res: Response , _next ) => {
+/**
+ * Obtains real-time predictions based on the station named passed. NOTE: stations are converted to lower-case and white spaces replaced with a dash 
+ * @param req - request 
+ * @param res - response
+ * @param _next - ignored 
+ * @param station - Station to pull from WMATA's api , found in the req.params
+ */
+export const getStationInfo = async (req :Request, res: Response , _next: any,) => {
     const station = <string>(req.params.station);
     const stationCode : string = Stations[station.toLocaleLowerCase().replace(' ','-')]; 
 
