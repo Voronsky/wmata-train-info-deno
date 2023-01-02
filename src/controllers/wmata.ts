@@ -6,8 +6,15 @@ const configData = await load();
 const API_KEY: string = configData['API_KEY']; 
 console.log(API_KEY);
 
+interface Train {
+    car: number;
+    destination: string;
+    line: string;
+    arrivalTime : string;
+}
+
 /**
- * Obtains real-time predictions based on the station named passed. NOTE: stations are converted to lower-case and white spaces replaced with a dash 
+ * Obtains real-time predictions of trains arriving at a given station. NOTE: stations are converted to lower-case and white spaces replaced with a dash 
  * @param req - request 
  * @param res - response
  * @param _next - ignored 
@@ -16,14 +23,23 @@ console.log(API_KEY);
 export const getStationInfo = async (req :Request, res: Response , _next: any,) => {
     const station = <string>(req.params.station);
     const stationCode : string = Stations[station.toLocaleLowerCase().replace(' ','-')]; 
-
+    const trains: Train[] = [];
     try{
         const response = await fetch(`https://api.wmata.com/StationPrediction.svc/json/GetPrediction/${stationCode}`, 
         { 
             headers: {'content-type': 'application/json', 'api_key': `${API_KEY}`}
         });
         const data = await response.json();
-        res.status(200).json({message: data});
+        let trainData = data['Trains'];
+        console.log(trainData);
+        for(let train of trainData){
+            console.log(train);
+            const newTrain : Train = { car: parseInt(train['Car']), destination: train['Destination'], line: train['Line'], arrivalTime: train['Min']};
+
+            trains.push(newTrain);
+            
+        }
+        res.status(200).json({message: trains});
 
     } catch (err){
         console.log(err);
