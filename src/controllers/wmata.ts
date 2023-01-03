@@ -1,6 +1,6 @@
 import {Request, Response} from 'npm:express@4.18.2';
 import Stations from '../../util/stations.json' assert { type: "json" };
-import { config , load } from "https://deno.land/std/dotenv/mod.ts";
+import { load } from "https://deno.land/std/dotenv/mod.ts";
 
 const configData = await load();
 const API_KEY: string = configData['API_KEY']; 

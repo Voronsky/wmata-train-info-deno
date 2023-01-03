@@ -3,6 +3,10 @@
     "dev": "deno run --watch src/server.ts"
   },
   "compilerOptions": {
-    "noImplicitAny": false,
+    "noImplicitAny": false
+  },
+  "fmt": {
+    "include": ["src/"],
+    "exclude": ["util/"]
   }
 }
