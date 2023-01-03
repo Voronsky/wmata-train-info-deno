@@ -1,5 +1,4 @@
 import express from "npm:express@4.18.2";
-import bodyParser from "npm:body-parser";
 import wmataRouter from "./routes/wmata.ts";
 
 const app : express = express();
