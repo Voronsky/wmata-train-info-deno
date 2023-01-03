@@ -1,4 +1,4 @@
-import {Request, Response, NextFunction} from 'npm:express@4.18.2';
+import {Request, Response} from 'npm:express@4.18.2';
 import Stations from '../../util/stations.json' assert { type: "json" };
 import { config , load } from "https://deno.land/std/dotenv/mod.ts";
 
@@ -21,8 +21,8 @@ interface Train {
  * @param station - Station to pull from WMATA's api , found in the req.params
  */
 export const getStationInfo = async (req :Request, res: Response , _next: any,) => {
-    const station = <string>(req.params.station);
-    const stationCode : string = Stations[station.toLocaleLowerCase().replace(' ','-')]; 
+    const station = (<string>req.params.station).toLocaleLowerCase().replace(' ','-');
+    const stationCode  = Stations[(station as keyof typeof Stations)];
     const trains: Train[] = [];
     try{
         const response = await fetch(`https://api.wmata.com/StationPrediction.svc/json/GetPrediction/${stationCode}`, 
