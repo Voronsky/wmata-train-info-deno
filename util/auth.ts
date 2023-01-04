@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction} from 'npm:express@4.18.2';
 import { load } from 'https://deno.land/std/dotenv/mod.ts';
 import * as jose from 'https://deno.land/x/jose@v4.11.2/index.ts';
+import * as log from "https://deno.land/std/log/mod.ts";
 
 const configData = await load();
 const alg = 'HS256'
 const TOKEN_SECRET : any = new TextEncoder().encode(configData['TOKEN_SECRET']);
-console.log('TOKEN SECRET: '+TOKEN_SECRET);
+log.debug('TOKEN SECRET: '+TOKEN_SECRET);
 
 /**
  * Placeholder singleton just to play around with JOSE lib. Must get deleted whenever I get around to it
@@ -49,11 +50,11 @@ export const generateToken = async (_req: Request, res: Response, _next: NextFun
         .setProtectedHeader({alg}) // property alg has to be in there
         .sign(TOKEN_SECRET);
         s.JWT = token;
-        console.log(`token generated ${token}`);
+        log.info(`token generated ${token}`);
         res.status(200).send('Token generated!');
     } catch(err){
         res.status(500).send(' Encountered an error while attempting to generate a token.');
-        console.log(err);
+        log.critical(err);
     }
 }
 
@@ -69,9 +70,10 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     //const token = req.body.token || req.query.token || req.headers['x-access-token'];
     const s = Singleton.getInstance();
     const token: string= s.JWT;
-    console.log(token);
+    log.debug(token);
 
     if(!token){
+        log.error('No token was passed');
         return  res.status(403).send('You must generate a token for authentication');
     }
 
@@ -81,6 +83,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
         return next();
     } catch (err){
         console.log(err);
+        log.error('Invalid token passed');
         return res.status(401).send('Invalid token');
     }
 }

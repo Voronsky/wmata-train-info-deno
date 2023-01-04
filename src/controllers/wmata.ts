@@ -2,10 +2,11 @@ import {Request, Response} from 'npm:express@4.18.2';
 import Stations from '../../util/stations.json' assert { type: "json" };
 import { load } from "https://deno.land/std/dotenv/mod.ts";
 import {Train} from '../models/wmata.ts';
+import * as log from "https://deno.land/std/log/mod.ts";
 
 const configData = await load();
 const API_KEY: string = configData['API_KEY']; 
-console.log(API_KEY);
+log.debug(API_KEY);
 
 
 
@@ -27,9 +28,9 @@ export const getStationInfo = async (req :Request, res: Response , _next: any,) 
         });
         const data = await response.json();
         let trainData = data['Trains'];
-        console.log(trainData);
+        log.debug(trainData);
         for(let train of trainData){
-        console.log(train);
+        log.debug(train);
             const newTrain : Train = { car: parseInt(train['Car']), destination: train['Destination'], line: train['Line'], arrivalTime: train['Min']};
 
             trains.push(newTrain);
@@ -38,7 +39,7 @@ export const getStationInfo = async (req :Request, res: Response , _next: any,) 
         res.status(200).json({message: trains});
 
     } catch (err){
-        console.log(err);
+        log.error(err);
         res.status(500).json({message: err});
     }
 };
