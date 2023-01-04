@@ -35,8 +35,15 @@ class Singleton {
 
 }
 
-export const generateToken = async (req: Request, res: Response, _next: NextFunction) => {
+/**
+ * Generates a JWT to be used . Currently using a Singleton to store the JWT, need to refactor that whenever i get around
+ * @param _req  - req body
+ * @param res - response obj to respond with
+ * @param _next  - not used
+ */
+export const generateToken = async (_req: Request, res: Response, _next: NextFunction) => {
     try{ 
+        // Replace this placeholder logic and actually utilize request , like a good person.
         const s: Singleton = Singleton.getInstance();
         const token = await new jose.SignJWT({foo: 'bar'})
         .setProtectedHeader({alg}) // property alg has to be in there
@@ -50,6 +57,13 @@ export const generateToken = async (req: Request, res: Response, _next: NextFunc
     }
 }
 
+/**
+ * Authentication middleware, ensures that the user making calls has a valid JWT 
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns success response if it passes , or failure
+ */
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
     // Token will be in one of these three
     //const token = req.body.token || req.query.token || req.headers['x-access-token'];
