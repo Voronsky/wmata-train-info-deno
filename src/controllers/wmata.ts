@@ -1,17 +1,13 @@
 import {Request, Response} from 'npm:express@4.18.2';
 import Stations from '../../util/stations.json' assert { type: "json" };
 import { load } from "https://deno.land/std/dotenv/mod.ts";
+import {Train} from '../models/wmata.ts';
 
 const configData = await load();
 const API_KEY: string = configData['API_KEY']; 
 console.log(API_KEY);
 
-interface Train {
-    car: number;
-    destination: string;
-    line: string;
-    arrivalTime : string;
-}
+
 
 /**
  * Obtains real-time predictions of trains arriving at a given station. NOTE: stations are converted to lower-case and white spaces replaced with a dash 
@@ -33,7 +29,7 @@ export const getStationInfo = async (req :Request, res: Response , _next: any,) 
         let trainData = data['Trains'];
         console.log(trainData);
         for(let train of trainData){
-            console.log(train);
+        console.log(train);
             const newTrain : Train = { car: parseInt(train['Car']), destination: train['Destination'], line: train['Line'], arrivalTime: train['Min']};
 
             trains.push(newTrain);
