@@ -12,5 +12,6 @@ TOKEN_SECRET=<secret_token_key>
 ## TODO
 
 Todo: 
+- [ ] Remove the singleton logic for storing JWTs in anticipation of DB logic like a normal person
 - [ ] Integrate into a db for storing user jwts
 - [ ] integrate into tidbyte for funsies
